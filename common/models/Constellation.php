@@ -2,7 +2,10 @@
 
 namespace common\models;
 
+use common\components\helpers\UserUrl;
 use common\models\AppActiveRecord;
+use OpenApi\Attributes\Property;
+use OpenApi\Attributes\Schema;
 use Random\RandomException;
 use Yii;
 use yii\base\Exception;
@@ -26,6 +29,17 @@ use yii\helpers\ArrayHelper;
  * @property int $updated_at     Дата изменения
  * @property int $type
  */
+
+#[Schema(properties: [
+    new Property(property: 'uuid', type: 'string'),
+    new Property(property: 'coordinates', type: 'string'),
+    new Property(property: 'name', type: 'string'),
+    new Property(property: 'name_en', type: 'string'),
+    new Property(property: 'description', type: 'string'),
+    new Property(property: 'description_en', type: 'string'),
+    new Property(property: 'image', type: 'string'),
+    new Property(property: 'user_photo', type: 'string'),
+])]
 class Constellation extends AppActiveRecord
 {
     /**
@@ -92,6 +106,20 @@ class Constellation extends AppActiveRecord
             'created_at' => Yii::t('app', 'Created At'),
             'updated_at' => Yii::t('app', 'Updated At'),
             'type' => Yii::t('app', 'Type'),
+        ];
+    }
+
+    public function fields(): array
+    {
+        return [
+            'uuid',
+            'coordinates',
+            'name',
+            'name_en',
+            'description',
+            'description_en',
+            'image' => fn() => UserUrl::toAbsolute($this->image),
+            'user_photo' => fn() => UserUrl::toAbsolute($this->user_photo),
         ];
     }
 }
